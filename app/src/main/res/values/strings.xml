@@ -42,4 +42,21 @@
     <string name="resolution">Resolution</string>
     <string name="file_path">File Path</string>
     <string name="close">Close</string>
+    
+    <!-- Bottom Navigation -->
+    <string name="all_photos">All</string>
+    <string name="albums">Albums</string>
+    <string name="screenshots">Screenshots</string>
+    
+    <!-- Album -->
+    <string name="no_albums">No albums found</string>
+    <string name="album_photo_count">%d photos</string>
+    <string name="camera">Camera</string>
+    <string name="downloads">Downloads</string>
+    <string name="whatsapp_images">WhatsApp Images</string>
+    <string name="telegram_images">Telegram Images</string>
+    
+    <!-- Screenshots -->
+    <string name="no_screenshots">No screenshots found</string>
+    <string name="tap_screenshots_hint">Your screenshots will appear here</string>
 </resources>

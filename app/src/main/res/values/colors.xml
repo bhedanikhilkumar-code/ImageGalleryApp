@@ -13,4 +13,5 @@
     <color name="overlay">#20000000</color>
     <color name="selection_color">#4CAF50</color>
     <color name="favorite_color">#FFC107</color>
+    <color name="purple_100">#F3E5F5</color>
 </resources>
