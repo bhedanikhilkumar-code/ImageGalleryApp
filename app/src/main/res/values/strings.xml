@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Image Gallery</string>
+    <string name="select_images">Select Images</string>
+    <string name="no_images">No images found</string>
+    <string name="permission_required">Permission required to access images</string>
+    <string name="grant_permission">Grant Permission</string>
+    <string name="previous">Previous</string>
+    <string name="next">Next</string>
+    <string name="image_viewer">Image Viewer</string>
+    <string name="tap_to_select">Tap below button to select photos from gallery</string>
+    <string name="add_photos">Add Photos</string>
+</resources>
