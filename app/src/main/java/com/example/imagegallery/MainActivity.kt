@@ -158,6 +158,11 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         menuInflater.inflate(R.menu.menu_main, menu)
+        
+        if (currentTab == Tab.ALBUMS) {
+            menu.findItem(R.id.action_search)?.isVisible = false
+        }
+        
         val searchItem = menu.findItem(R.id.action_search)
         val searchView = searchItem.actionView as SearchView
         searchView.queryHint = getString(R.string.search_hint)
@@ -178,15 +183,34 @@ class MainActivity : AppCompatActivity() {
             android.R.id.home -> {
                 if (selectedAlbum != null) {
                     selectedAlbum = null
+                    currentTab = Tab.ALL
                     updateTitle()
                     sortImages()
                 }
                 true
             }
-            R.id.sort_date -> { currentSortType = SortType.DATE; sortImages(); true }
-            R.id.sort_name -> { currentSortType = SortType.NAME; sortImages(); true }
-            R.id.sort_size -> { currentSortType = SortType.SIZE; sortImages(); true }
-            R.id.action_theme -> { toggleTheme(); true }
+            R.id.sort_date -> { 
+                currentSortType = SortType.DATE
+                sortImages()
+                Toast.makeText(this, "Sorted by date", Toast.LENGTH_SHORT).show()
+                true 
+            }
+            R.id.sort_name -> { 
+                currentSortType = SortType.NAME
+                sortImages()
+                Toast.makeText(this, "Sorted by name", Toast.LENGTH_SHORT).show()
+                true 
+            }
+            R.id.sort_size -> { 
+                currentSortType = SortType.SIZE
+                sortImages()
+                Toast.makeText(this, "Sorted by size", Toast.LENGTH_SHORT).show()
+                true 
+            }
+            R.id.action_theme -> { 
+                toggleTheme()
+                true 
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
@@ -214,6 +238,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun loadImages() {
+        if (allImages.isNotEmpty()) {
+            sortImages()
+            return
+        }
+        
         allImages.clear()
         albums.clear()
         
@@ -264,7 +293,7 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "${allImages.size} photos loaded", Toast.LENGTH_SHORT).show()
             
         } catch (e: Exception) {
-            Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()
+            Toast.makeText(this, "Error loading images: ${e.message}", Toast.LENGTH_LONG).show()
             e.printStackTrace()
         }
     }
@@ -355,15 +384,10 @@ class MainActivity : AppCompatActivity() {
             !hasStoragePermission() -> showPermissionView()
             currentTab == Tab.ALBUMS && albums.isEmpty() -> showEmptyView(getString(R.string.no_albums), getString(R.string.tap_to_select))
             displayedImages.isEmpty() -> {
-                val msg = when (currentTab) {
-                    Tab.FAVORITES -> getString(R.string.no_favorites)
-                    Tab.SCREENSHOTS -> getString(R.string.no_screenshots)
-                    else -> getString(R.string.no_images)
-                }
-                val sub = when (currentTab) {
-                    Tab.FAVORITES -> getString(R.string.tap_to_select)
-                    Tab.SCREENSHOTS -> getString(R.string.tap_screenshots_hint)
-                    else -> getString(R.string.tap_to_select)
+                val (msg, sub) = when (currentTab) {
+                    Tab.FAVORITES -> getString(R.string.no_favorites) to getString(R.string.tap_to_select)
+                    Tab.SCREENSHOTS -> getString(R.string.no_screenshots) to getString(R.string.tap_screenshots_hint)
+                    else -> getString(R.string.no_images) to getString(R.string.tap_to_select)
                 }
                 showEmptyView(msg, sub)
             }
@@ -460,7 +484,10 @@ class MainActivity : AppCompatActivity() {
             }
         }
         prefs.edit().putStringSet("favorites", favoritesSet).apply()
-        Toast.makeText(this, if (newFavoriteState) getString(R.string.added_to_favorites) else getString(R.string.removed_from_favorites), Toast.LENGTH_SHORT).show()
+        
+        val message = if (newFavoriteState) getString(R.string.added_to_favorites) else getString(R.string.removed_from_favorites)
+        Toast.makeText(this, message, Toast.LENGTH_SHORT).show()
+        
         exitSelectionMode()
         sortImages()
     }
