@@ -46,6 +46,7 @@
     <!-- Bottom Navigation -->
     <string name="all_photos">All</string>
     <string name="albums">Albums</string>
+    <string name="favorites">Favorites</string>
     <string name="screenshots">Screenshots</string>
     
     <!-- Album -->
