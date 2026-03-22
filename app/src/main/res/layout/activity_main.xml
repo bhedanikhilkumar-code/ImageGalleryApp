@@ -21,6 +21,46 @@
             app:titleTextColor="@color/purple_700"
             app:titleTextAppearance="@style/TextAppearance.MaterialComponents.Headline6"/>
 
+        <LinearLayout
+            android:id="@+id/selectionToolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@color/purple_500"
+            android:gravity="center_vertical"
+            android:orientation="horizontal"
+            android:paddingHorizontal="16dp"
+            android:visibility="gone">
+
+            <ImageButton
+                android:id="@+id/btnCloseSelection"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_back"
+                android:contentDescription="@string/cancel"
+                app:tint="@color/white"/>
+
+            <TextView
+                android:id="@+id/tvSelectionCount"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="16dp"
+                android:textColor="@color/white"
+                android:textSize="18sp"
+                android:textStyle="bold"/>
+
+            <ImageButton
+                android:id="@+id/btnSelectAll"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_check"
+                android:contentDescription="@string/select_all"
+                app:tint="@color/white"/>
+
+        </LinearLayout>
+
     </com.google.android.material.appbar.AppBarLayout>
 
     <FrameLayout
@@ -52,6 +92,7 @@
                 android:contentDescription="@string/no_images"/>
 
             <TextView
+                android:id="@+id/tvEmptyMessage"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
@@ -130,5 +171,47 @@
         app:icon="@drawable/ic_add_photo"
         app:iconTint="@color/white"
         app:backgroundTint="@color/purple_500"/>
+
+    <LinearLayout
+        android:id="@+id/fabSelectionMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom|end"
+        android:layout_marginEnd="20dp"
+        android:layout_marginBottom="20dp"
+        android:orientation="vertical"
+        android:gravity="end"
+        android:visibility="gone">
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabShare"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@string/share"
+            app:srcCompat="@drawable/ic_share"
+            app:fabSize="mini"
+            app:backgroundTint="@color/teal_200"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabFavorite"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="16dp"
+            android:contentDescription="@string/favorite"
+            app:srcCompat="@drawable/ic_favorite"
+            app:fabSize="mini"
+            app:backgroundTint="@color/favorite_color"/>
+
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:id="@+id/fabDelete"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:contentDescription="@string/delete"
+            app:srcCompat="@drawable/ic_delete"
+            app:fabSize="mini"
+            app:backgroundTint="#F44336"/>
+
+    </LinearLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

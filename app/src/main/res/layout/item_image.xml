@@ -31,6 +31,28 @@
             android:background="#20000000"
             android:visibility="gone"/>
 
+        <ImageView
+            android:id="@+id/ivFavorite"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="top|end"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_favorite"
+            android:visibility="gone"
+            android:contentDescription="@string/favorite"
+            app:tint="@color/favorite_color"/>
+
+        <ImageView
+            android:id="@+id/ivSelection"
+            android:layout_width="28dp"
+            android:layout_height="28dp"
+            android:layout_gravity="top|start"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_check_circle_outline"
+            android:visibility="gone"
+            android:contentDescription="@string/selected_count"
+            app:tint="@color/selection_color"/>
+
     </FrameLayout>
 
 </com.google.android.material.card.MaterialCardView>

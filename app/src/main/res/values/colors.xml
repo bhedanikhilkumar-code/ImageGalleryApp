@@ -8,6 +8,9 @@
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
     <color name="gray_background">#F5F5F5</color>
+    <color name="gray_background_dark">#121212</color>
     <color name="image_placeholder">#E0E0E0</color>
     <color name="overlay">#20000000</color>
+    <color name="selection_color">#4CAF50</color>
+    <color name="favorite_color">#FFC107</color>
 </resources>
