@@ -109,6 +109,7 @@ class MainActivity : AppCompatActivity() {
                     currentTab = Tab.ALL
                     updateTitle()
                     showImageGrid()
+                    sortImages()
                     true
                 }
                 R.id.nav_albums -> {
@@ -172,11 +173,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setupClickListeners() {
-        binding.fabAdd.setOnClickListener {
-            if (imageAdapter.isSelectionMode) exitSelectionMode()
-            else pickImages()
-        }
-        binding.btnSelectImages.setOnClickListener { pickImages() }
         binding.btnGrantPermission.setOnClickListener { requestStoragePermission() }
 
         binding.btnCloseSelection.setOnClickListener { exitSelectionMode() }
@@ -408,7 +404,6 @@ class MainActivity : AppCompatActivity() {
         binding.toolbar.visibility = View.GONE
         binding.selectionToolbar.visibility = View.VISIBLE
         binding.fabSelectionMenu.visibility = View.VISIBLE
-        binding.fabAdd.visibility = View.GONE
         updateSelectionCount()
     }
 
@@ -417,7 +412,6 @@ class MainActivity : AppCompatActivity() {
         binding.toolbar.visibility = View.VISIBLE
         binding.selectionToolbar.visibility = View.GONE
         binding.fabSelectionMenu.visibility = View.GONE
-        binding.fabAdd.visibility = View.VISIBLE
     }
 
     private fun updateSelectionCount() {

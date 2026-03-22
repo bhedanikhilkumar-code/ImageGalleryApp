@@ -10,12 +10,6 @@
         app:showAsAction="ifRoom|collapseActionView"/>
 
     <item
-        android:id="@+id/action_favorites"
-        android:icon="@drawable/ic_favorite_border"
-        android:title="@string/show_favorites"
-        app:showAsAction="ifRoom"/>
-
-    <item
         android:id="@+id/action_sort"
         android:icon="@drawable/ic_sort"
         android:title="@string/sort_by"
