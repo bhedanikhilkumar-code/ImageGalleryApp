@@ -5,9 +5,9 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="4dp"
-    app:cardCornerRadius="16dp"
-    app:cardElevation="4dp"
-    app:cardBackgroundColor="@android:color/white">
+    app:cardCornerRadius="12dp"
+    app:cardElevation="2dp"
+    app:cardBackgroundColor="@color/white">
 
     <FrameLayout
         android:layout_width="match_parent"
@@ -16,10 +16,7 @@
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:minHeight="120dp"
-            android:maxHeight="200dp"
+            android:layout_height="150dp"
             android:scaleType="centerCrop"
             android:background="@drawable/placeholder_gradient"
             android:contentDescription="@string/app_name"/>
@@ -28,13 +25,13 @@
             android:id="@+id/overlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#20000000"
+            android:background="#30000000"
             android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/ivFavorite"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="top|end"
             android:layout_margin="8dp"
             android:src="@drawable/ic_favorite"
@@ -47,7 +44,7 @@
             android:layout_width="28dp"
             android:layout_height="28dp"
             android:layout_gravity="top|start"
-            android:layout_margin="8dp"
+            android:layout_margin="6dp"
             android:src="@drawable/ic_check_circle_outline"
             android:visibility="gone"
             android:contentDescription="@string/selected_count"

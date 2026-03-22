@@ -211,7 +211,11 @@ class MainActivity : AppCompatActivity() {
         searchView.queryHint = getString(R.string.search_hint)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?) = true
-            override fun onQueryTextChange(newText: String?) = if (currentTab == Tab.ALL) { filterImages(newText ?: ""); true } else false
+            override fun onQueryTextChange(newText: String?) = if (currentTab == Tab.ALL || currentTab == Tab.FAVORITES || currentTab == Tab.SCREENSHOTS) { filterImages(newText ?: ""); true } else {
+                searchView.setQuery("", false)
+                searchView.clearFocus()
+                true
+            }
         })
         return true
     }
@@ -297,6 +301,7 @@ class MainActivity : AppCompatActivity() {
             
             albums.sortByDescending { it.images.size }
             sortImages()
+            Toast.makeText(this, "${allImages.size} photos loaded", Toast.LENGTH_SHORT).show()
             
         } catch (e: Exception) {
             Toast.makeText(this, "Error: ${e.message}", Toast.LENGTH_LONG).show()
@@ -359,13 +364,20 @@ class MainActivity : AppCompatActivity() {
 
     private fun filterImages(query: String) {
         displayedImages.clear()
+        val sourceList = when (currentTab) {
+            Tab.ALL -> if (selectedAlbum != null) selectedAlbum!!.images else allImages
+            Tab.FAVORITES -> allImages.filter { it.isFavorite }
+            Tab.SCREENSHOTS -> filterScreenshotsList()
+            Tab.ALBUMS -> emptyList()
+        }
+        
         if (query.isEmpty()) {
-            displayedImages.addAll(if (selectedAlbum != null) selectedAlbum!!.images else allImages)
+            displayedImages.addAll(sourceList)
         } else {
-            val source = if (selectedAlbum != null) selectedAlbum!!.images else allImages
-            displayedImages.addAll(source.filter { it.name.contains(query, ignoreCase = true) })
+            displayedImages.addAll(sourceList.filter { it.name.contains(query, ignoreCase = true) })
         }
         imageAdapter.updateImages(displayedImages)
+        updateUI()
     }
 
     private fun updateUI() {
