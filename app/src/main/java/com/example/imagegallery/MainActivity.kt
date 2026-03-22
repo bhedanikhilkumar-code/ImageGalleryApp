@@ -73,8 +73,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun setupToolbar() {
         setSupportActionBar(binding.toolbar)
-        supportActionBar?.setDisplayShowHomeEnabled(false)
-        supportActionBar?.setDisplayHomeAsUpEnabled(false)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
         supportActionBar?.setDisplayShowTitleEnabled(true)
     }
 
@@ -139,10 +138,25 @@ class MainActivity : AppCompatActivity() {
 
     private fun updateTitle() {
         when (currentTab) {
-            Tab.ALL -> supportActionBar?.title = if (selectedAlbum != null) selectedAlbum!!.name else getString(R.string.all_photos)
-            Tab.ALBUMS -> supportActionBar?.title = getString(R.string.albums)
-            Tab.FAVORITES -> supportActionBar?.title = getString(R.string.favorites)
-            Tab.SCREENSHOTS -> supportActionBar?.title = getString(R.string.screenshots)
+            Tab.ALL -> {
+                supportActionBar?.title = if (selectedAlbum != null) selectedAlbum!!.name else getString(R.string.all_photos)
+                supportActionBar?.setDisplayHomeAsUpEnabled(selectedAlbum != null)
+                if (selectedAlbum != null) {
+                    supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back)
+                }
+            }
+            Tab.ALBUMS -> {
+                supportActionBar?.title = getString(R.string.albums)
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            }
+            Tab.FAVORITES -> {
+                supportActionBar?.title = getString(R.string.favorites)
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            }
+            Tab.SCREENSHOTS -> {
+                supportActionBar?.title = getString(R.string.screenshots)
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            }
         }
     }
 
@@ -169,7 +183,7 @@ class MainActivity : AppCompatActivity() {
         displayedImages.clear()
         displayedImages.addAll(album.images)
         imageAdapter.updateImages(displayedImages)
-        showImagesView()
+        showImageGrid()
     }
 
     private fun setupClickListeners() {
@@ -204,6 +218,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            android.R.id.home -> {
+                selectedAlbum = null
+                updateTitle()
+                showImageGrid()
+                sortImages()
+                true
+            }
             R.id.sort_date -> { currentSortType = SortType.DATE; sortImages(); true }
             R.id.sort_name -> { currentSortType = SortType.NAME; sortImages(); true }
             R.id.sort_size -> { currentSortType = SortType.SIZE; sortImages(); true }

@@ -40,7 +40,7 @@ class AlbumAdapter(
 
         fun bind(album: Album) {
             binding.tvAlbumName.text = album.name
-            binding.tvAlbumCount.text = binding.root.context.getString(R.string.album_photo_count, album.imageCount)
+            binding.tvAlbumCount.text = album.imageCount.toString()
 
             val requestOptions = RequestOptions()
                 .diskCacheStrategy(DiskCacheStrategy.ALL)

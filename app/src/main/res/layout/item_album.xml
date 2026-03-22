@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.cardview.widget.CardView
+<com.google.android.material.card.MaterialCardView
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp">
+    android:layout_margin="6dp"
+    app:cardCornerRadius="16dp"
+    app:cardElevation="3dp"
+    app:cardBackgroundColor="@color/white">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,7 +16,7 @@
 
         <FrameLayout
             android:layout_width="match_parent"
-            android:layout_height="120dp">
+            android:layout_height="140dp">
 
             <ImageView
                 android:id="@+id/ivAlbumCover"
@@ -25,40 +26,46 @@
                 android:background="@color/purple_100"/>
 
             <ImageView
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:layout_gravity="center"
                 android:src="@drawable/ic_album"
-                android:alpha="0.5"/>
+                android:alpha="0.4"
+                app:tint="@color/purple_500"/>
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_margin="8dp"
+                android:background="@drawable/bg_count_badge"
+                android:paddingHorizontal="10dp"
+                android:paddingVertical="4dp">
+
+                <TextView
+                    android:id="@+id/tvAlbumCount"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textColor="@color/white"
+                    android:textSize="12sp"
+                    android:textStyle="bold"/>
+
+            </LinearLayout>
 
         </FrameLayout>
 
-        <LinearLayout
+        <TextView
+            android:id="@+id/tvAlbumName"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="12dp">
-
-            <TextView
-                android:id="@+id/tvAlbumName"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textColor="@color/purple_700"
-                android:textSize="14sp"
-                android:textStyle="bold"
-                android:maxLines="1"
-                android:ellipsize="end"/>
-
-            <TextView
-                android:id="@+id/tvAlbumCount"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="2dp"
-                android:textColor="#666666"
-                android:textSize="12sp"/>
-
-        </LinearLayout>
+            android:padding="12dp"
+            android:textColor="@color/purple_700"
+            android:textSize="14sp"
+            android:textStyle="bold"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:gravity="center_vertical"/>
 
     </LinearLayout>
 
-</androidx.cardview.widget.CardView>
+</com.google.android.material.card.MaterialCardView>
