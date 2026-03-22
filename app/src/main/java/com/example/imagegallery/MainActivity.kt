@@ -5,14 +5,12 @@ import android.content.ContentUris
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import android.view.animation.AnimationUtils
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AlertDialog
@@ -21,7 +19,6 @@ import androidx.appcompat.app.AppCompatDelegate
 import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
-import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.imagegallery.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -46,14 +43,6 @@ class MainActivity : AppCompatActivity() {
         ActivityResultContracts.RequestPermission()
     ) { isGranted ->
         if (isGranted) loadImages() else showPermissionView()
-    }
-
-    private val pickImagesLauncher = registerForActivityResult(
-        ActivityResultContracts.GetMultipleContents()
-    ) { uris ->
-        if (uris.isNotEmpty()) {
-            Toast.makeText(this, "${uris.size} images selected", Toast.LENGTH_SHORT).show()
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -90,24 +79,17 @@ class MainActivity : AppCompatActivity() {
             displayImagesForAlbum(album)
         }
 
-        binding.recyclerView.apply {
-            layoutManager = GridLayoutManager(this@MainActivity, 2)
-            adapter = imageAdapter
-            layoutAnimation = AnimationUtils.loadLayoutAnimation(
-                this@MainActivity,
-                R.anim.layout_animation_fall_down
-            )
-        }
+        binding.recyclerView.layoutManager = GridLayoutManager(this, 3)
+        binding.recyclerView.adapter = imageAdapter
     }
 
     private fun setupBottomNavigation() {
         binding.bottomNavigation.setOnItemSelectedListener { item ->
+            selectedAlbum = null
             when (item.itemId) {
                 R.id.nav_all -> {
-                    selectedAlbum = null
                     currentTab = Tab.ALL
                     updateTitle()
-                    showImageGrid()
                     sortImages()
                     true
                 }
@@ -118,17 +100,15 @@ class MainActivity : AppCompatActivity() {
                     true
                 }
                 R.id.nav_favorites -> {
-                    selectedAlbum = null
                     currentTab = Tab.FAVORITES
                     updateTitle()
-                    filterFavorites()
+                    sortImages()
                     true
                 }
                 R.id.nav_screenshots -> {
-                    selectedAlbum = null
                     currentTab = Tab.SCREENSHOTS
                     updateTitle()
-                    filterScreenshots()
+                    sortImages()
                     true
                 }
                 else -> false
@@ -139,7 +119,7 @@ class MainActivity : AppCompatActivity() {
     private fun updateTitle() {
         when (currentTab) {
             Tab.ALL -> {
-                supportActionBar?.title = if (selectedAlbum != null) selectedAlbum!!.name else getString(R.string.all_photos)
+                supportActionBar?.title = selectedAlbum?.name ?: getString(R.string.all_photos)
                 supportActionBar?.setDisplayHomeAsUpEnabled(selectedAlbum != null)
                 if (selectedAlbum != null) {
                     supportActionBar?.setHomeAsUpIndicator(R.drawable.ic_back)
@@ -160,35 +140,8 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private fun showImageGrid() {
-        binding.recyclerView.layoutManager = GridLayoutManager(this, 2)
-        binding.recyclerView.adapter = imageAdapter
-        binding.recyclerView.scheduleLayoutAnimation()
-    }
-
-    private fun showAlbumGrid() {
-        albumAdapter.updateAlbums(albums)
-        binding.recyclerView.layoutManager = GridLayoutManager(this, 2)
-        binding.recyclerView.adapter = albumAdapter
-        binding.recyclerView.scheduleLayoutAnimation()
-        
-        if (albums.isEmpty()) {
-            showEmptyView(getString(R.string.no_albums), getString(R.string.tap_to_select))
-        } else {
-            showImagesView()
-        }
-    }
-
-    private fun displayImagesForAlbum(album: Album) {
-        displayedImages.clear()
-        displayedImages.addAll(album.images)
-        imageAdapter.updateImages(displayedImages)
-        showImageGrid()
-    }
-
     private fun setupClickListeners() {
         binding.btnGrantPermission.setOnClickListener { requestStoragePermission() }
-
         binding.btnCloseSelection.setOnClickListener { exitSelectionMode() }
         binding.btnSelectAll.setOnClickListener {
             if (imageAdapter.getSelectedCount() == displayedImages.size) {
@@ -198,7 +151,6 @@ class MainActivity : AppCompatActivity() {
             }
             updateSelectionCount()
         }
-
         binding.fabShare.setOnClickListener { shareSelectedImages() }
         binding.fabFavorite.setOnClickListener { toggleFavoriteSelected() }
         binding.fabDelete.setOnClickListener { deleteSelectedImages() }
@@ -211,10 +163,11 @@ class MainActivity : AppCompatActivity() {
         searchView.queryHint = getString(R.string.search_hint)
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextSubmit(query: String?) = true
-            override fun onQueryTextChange(newText: String?) = if (currentTab == Tab.ALL || currentTab == Tab.FAVORITES || currentTab == Tab.SCREENSHOTS) { filterImages(newText ?: ""); true } else {
-                searchView.setQuery("", false)
-                searchView.clearFocus()
-                true
+            override fun onQueryTextChange(newText: String?): Boolean {
+                if (currentTab != Tab.ALBUMS) {
+                    filterImages(newText ?: "")
+                }
+                return true
             }
         })
         return true
@@ -223,10 +176,11 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
             android.R.id.home -> {
-                selectedAlbum = null
-                updateTitle()
-                showImageGrid()
-                sortImages()
+                if (selectedAlbum != null) {
+                    selectedAlbum = null
+                    updateTitle()
+                    sortImages()
+                }
                 true
             }
             R.id.sort_date -> { currentSortType = SortType.DATE; sortImages(); true }
@@ -238,8 +192,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun checkPermissionAndLoad() {
-        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.READ_MEDIA_IMAGES
-        else Manifest.permission.READ_EXTERNAL_STORAGE
+        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Manifest.permission.READ_MEDIA_IMAGES
+        } else {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        }
         when {
             ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED -> loadImages()
             shouldShowRequestPermissionRationale(permission) -> showPermissionView()
@@ -248,8 +205,11 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun requestStoragePermission() {
-        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.READ_MEDIA_IMAGES
-        else Manifest.permission.READ_EXTERNAL_STORAGE
+        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Manifest.permission.READ_MEDIA_IMAGES
+        } else {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        }
         permissionLauncher.launch(permission)
     }
 
@@ -319,58 +279,68 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun sortImages() {
-        displayedImages.clear()
+        if (currentTab == Tab.ALBUMS) {
+            showAlbumGrid()
+            return
+        }
+
         val sourceList = when (currentTab) {
-            Tab.ALL -> if (selectedAlbum != null) selectedAlbum!!.images else allImages
+            Tab.ALL -> selectedAlbum?.images ?: allImages
             Tab.FAVORITES -> allImages.filter { it.isFavorite }
-            Tab.SCREENSHOTS -> filterScreenshotsList()
+            Tab.SCREENSHOTS -> allImages.filter { item ->
+                val name = item.name.lowercase()
+                name.contains("screenshot") || name.contains("screen shot") || 
+                name.contains("capture") || name.startsWith("screenshot_") ||
+                name.startsWith("screen_")
+            }
             Tab.ALBUMS -> emptyList()
         }
         
+        displayedImages.clear()
         displayedImages.addAll(when (currentSortType) {
             SortType.DATE -> sourceList.sortedByDescending { it.dateAdded }
             SortType.NAME -> sourceList.sortedBy { it.name.lowercase() }
             SortType.SIZE -> sourceList.sortedByDescending { it.size }
         })
         
-        if (currentTab != Tab.ALBUMS) {
-            imageAdapter.updateImages(displayedImages)
-            updateUI()
-        }
-    }
-
-    private fun filterFavorites() {
-        displayedImages.clear()
-        displayedImages.addAll(allImages.filter { it.isFavorite }.sortedByDescending { it.dateAdded })
         imageAdapter.updateImages(displayedImages)
+        showImageGrid()
         updateUI()
     }
 
-    private fun filterScreenshots() {
-        displayedImages.clear()
-        displayedImages.addAll(filterScreenshotsList())
-        imageAdapter.updateImages(displayedImages)
+    private fun showImageGrid() {
+        binding.recyclerView.adapter = imageAdapter
+        (binding.recyclerView.layoutManager as? GridLayoutManager)?.spanCount = 3
+    }
+
+    private fun showAlbumGrid() {
+        albumAdapter.updateAlbums(albums)
+        binding.recyclerView.adapter = albumAdapter
+        (binding.recyclerView.layoutManager as? GridLayoutManager)?.spanCount = 2
         updateUI()
     }
 
-    private fun filterScreenshotsList(): List<ImageItem> {
-        return allImages.filter { item ->
-            val name = item.name.lowercase()
-            name.contains("screenshot") || name.contains("screen shot") || 
-            name.contains("capture") || name.startsWith("screenshot_") ||
-            name.startsWith("screen_") || name.contains("img_") && (name.contains("screenshot") || name.contains("capture"))
-        }.sortedByDescending { it.dateAdded }
+    private fun displayImagesForAlbum(album: Album) {
+        displayedImages.clear()
+        displayedImages.addAll(album.images)
+        imageAdapter.updateImages(displayedImages)
+        showImageGrid()
     }
 
     private fun filterImages(query: String) {
-        displayedImages.clear()
         val sourceList = when (currentTab) {
-            Tab.ALL -> if (selectedAlbum != null) selectedAlbum!!.images else allImages
+            Tab.ALL -> selectedAlbum?.images ?: allImages
             Tab.FAVORITES -> allImages.filter { it.isFavorite }
-            Tab.SCREENSHOTS -> filterScreenshotsList()
+            Tab.SCREENSHOTS -> allImages.filter { item ->
+                val name = item.name.lowercase()
+                name.contains("screenshot") || name.contains("screen shot") || 
+                name.contains("capture") || name.startsWith("screenshot_") ||
+                name.startsWith("screen_")
+            }
             Tab.ALBUMS -> emptyList()
         }
         
+        displayedImages.clear()
         if (query.isEmpty()) {
             displayedImages.addAll(sourceList)
         } else {
@@ -383,11 +353,17 @@ class MainActivity : AppCompatActivity() {
     private fun updateUI() {
         when {
             !hasStoragePermission() -> showPermissionView()
+            currentTab == Tab.ALBUMS && albums.isEmpty() -> showEmptyView(getString(R.string.no_albums), getString(R.string.tap_to_select))
             displayedImages.isEmpty() -> {
-                val (msg, sub) = when (currentTab) {
-                    Tab.FAVORITES -> getString(R.string.no_favorites) to getString(R.string.tap_to_select)
-                    Tab.SCREENSHOTS -> getString(R.string.no_screenshots) to getString(R.string.tap_screenshots_hint)
-                    else -> getString(R.string.no_images) to getString(R.string.tap_to_select)
+                val msg = when (currentTab) {
+                    Tab.FAVORITES -> getString(R.string.no_favorites)
+                    Tab.SCREENSHOTS -> getString(R.string.no_screenshots)
+                    else -> getString(R.string.no_images)
+                }
+                val sub = when (currentTab) {
+                    Tab.FAVORITES -> getString(R.string.tap_to_select)
+                    Tab.SCREENSHOTS -> getString(R.string.tap_screenshots_hint)
+                    else -> getString(R.string.tap_to_select)
                 }
                 showEmptyView(msg, sub)
             }
@@ -399,12 +375,14 @@ class MainActivity : AppCompatActivity() {
         binding.permissionView.visibility = View.VISIBLE
         binding.emptyView.visibility = View.GONE
         binding.recyclerView.visibility = View.GONE
+        binding.selectionToolbar.visibility = View.GONE
     }
 
     private fun showEmptyView(message: String, subtitle: String) {
         binding.permissionView.visibility = View.GONE
         binding.emptyView.visibility = View.VISIBLE
         binding.recyclerView.visibility = View.GONE
+        binding.selectionToolbar.visibility = View.GONE
         binding.tvEmptyMessage.text = message
         binding.tvEmptySubtitle.text = subtitle
     }
@@ -413,16 +391,16 @@ class MainActivity : AppCompatActivity() {
         binding.permissionView.visibility = View.GONE
         binding.emptyView.visibility = View.GONE
         binding.recyclerView.visibility = View.VISIBLE
-        if (currentTab != Tab.ALBUMS) binding.recyclerView.scheduleLayoutAnimation()
     }
 
     private fun hasStoragePermission(): Boolean {
-        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) Manifest.permission.READ_MEDIA_IMAGES
-        else Manifest.permission.READ_EXTERNAL_STORAGE
+        val permission = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            Manifest.permission.READ_MEDIA_IMAGES
+        } else {
+            Manifest.permission.READ_EXTERNAL_STORAGE
+        }
         return ContextCompat.checkSelfPermission(this, permission) == PackageManager.PERMISSION_GRANTED
     }
-
-    private fun pickImages() = pickImagesLauncher.launch("image/*")
 
     private fun showImageOptions(item: ImageItem, position: Int) {
         val intent = Intent(this, FullScreenImageViewer::class.java).apply {
@@ -434,7 +412,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun enterSelectionMode() {
         imageAdapter.enterSelectionMode()
-        binding.toolbar.visibility = View.GONE
         binding.selectionToolbar.visibility = View.VISIBLE
         binding.fabSelectionMenu.visibility = View.VISIBLE
         updateSelectionCount()
@@ -442,7 +419,6 @@ class MainActivity : AppCompatActivity() {
 
     private fun exitSelectionMode() {
         imageAdapter.exitSelectionMode()
-        binding.toolbar.visibility = View.VISIBLE
         binding.selectionToolbar.visibility = View.GONE
         binding.fabSelectionMenu.visibility = View.GONE
     }
@@ -519,8 +495,11 @@ class MainActivity : AppCompatActivity() {
 
     private fun toggleTheme() {
         val currentMode = prefs.getInt("theme_mode", AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-        val newMode = if (currentMode == AppCompatDelegate.MODE_NIGHT_YES) AppCompatDelegate.MODE_NIGHT_NO
-        else AppCompatDelegate.MODE_NIGHT_YES
+        val newMode = if (currentMode == AppCompatDelegate.MODE_NIGHT_YES) {
+            AppCompatDelegate.MODE_NIGHT_NO
+        } else {
+            AppCompatDelegate.MODE_NIGHT_YES
+        }
         prefs.edit().putInt("theme_mode", newMode).apply()
         AppCompatDelegate.setDefaultNightMode(newMode)
     }
@@ -532,7 +511,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        if (hasStoragePermission() && allImages.isNotEmpty()) sortImages()
+        if (hasStoragePermission() && allImages.isNotEmpty()) {
+            sortImages()
+        }
     }
 }
 

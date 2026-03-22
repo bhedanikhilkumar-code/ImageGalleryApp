@@ -1,166 +1,162 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.coordinatorlayout.widget.CoordinatorLayout
+<androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/gray_background">
 
-    <com.google.android.material.appbar.AppBarLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@color/white"
-        app:elevation="4dp">
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/purple_500"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:titleTextColor="@color/white"
+        app:title="@string/app_name"/>
 
-        <androidx.appcompat.widget.Toolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/white"
-            app:title="@string/app_name"
-            app:titleTextColor="@color/purple_700"/>
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:padding="8dp"
+        android:clipToPadding="false"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-        <LinearLayout
-            android:id="@+id/selectionToolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@color/purple_500"
-            android:gravity="center_vertical"
-            android:orientation="horizontal"
-            android:paddingHorizontal="16dp"
-            android:visibility="gone">
+    <LinearLayout
+        android:id="@+id/emptyView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-            <ImageButton
-                android:id="@+id/btnCloseSelection"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_back"
-                android:contentDescription="@string/cancel"
-                app:tint="@color/white"/>
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:src="@drawable/ic_image_placeholder"
+            android:alpha="0.5"
+            android:contentDescription="@string/no_images"/>
 
-            <TextView
-                android:id="@+id/tvSelectionCount"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:layout_marginStart="16dp"
-                android:textColor="@color/white"
-                android:textSize="18sp"
-                android:textStyle="bold"/>
+        <TextView
+            android:id="@+id/tvEmptyMessage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/no_images"
+            android:textSize="18sp"
+            android:textColor="#333333"/>
 
-            <ImageButton
-                android:id="@+id/btnSelectAll"
-                android:layout_width="40dp"
-                android:layout_height="40dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_check"
-                android:contentDescription="@string/select_all"
-                app:tint="@color/white"/>
+        <TextView
+            android:id="@+id/tvEmptySubtitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/tap_to_select"
+            android:textSize="14sp"
+            android:textColor="#666666"/>
 
-        </LinearLayout>
+    </LinearLayout>
 
-    </com.google.android.material.appbar.AppBarLayout>
+    <LinearLayout
+        android:id="@+id/permissionView"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:gravity="center"
+        android:orientation="vertical"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginBottom="56dp"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+        <ImageView
+            android:layout_width="80dp"
+            android:layout_height="80dp"
+            android:src="@drawable/ic_permission"
+            android:alpha="0.6"
+            android:contentDescription="@string/permission_required"/>
 
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/recyclerView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:padding="4dp"
-            android:clipToPadding="false"/>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="@string/permission_required"
+            android:textSize="16sp"
+            android:textColor="#333333"/>
 
-        <LinearLayout
-            android:id="@+id/emptyView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:padding="32dp">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnGrantPermission"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="@string/grant_permission"/>
 
-            <ImageView
-                android:layout_width="120dp"
-                android:layout_height="120dp"
-                android:src="@drawable/ic_image_placeholder"
-                android:alpha="0.5"
-                android:contentDescription="@string/no_images"/>
+    </LinearLayout>
 
-            <TextView
-                android:id="@+id/tvEmptyMessage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/no_images"
-                android:textSize="18sp"
-                android:textColor="#333333"
-                android:textStyle="bold"/>
+    <LinearLayout
+        android:id="@+id/selectionToolbar"
+        android:layout_width="0dp"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@color/purple_700"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:paddingHorizontal="8dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@id/toolbar"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent">
 
-            <TextView
-                android:id="@+id/tvEmptySubtitle"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:text="@string/tap_to_select"
-                android:textSize="14sp"
-                android:textColor="#666666"
-                android:textAlignment="center"/>
+        <ImageButton
+            android:id="@+id/btnCloseSelection"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_back"
+            android:contentDescription="@string/cancel"
+            app:tint="@color/white"/>
 
-        </LinearLayout>
+        <TextView
+            android:id="@+id/tvSelectionCount"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:layout_marginStart="8dp"
+            android:textColor="@color/white"
+            android:textSize="16sp"
+            android:textStyle="bold"/>
 
-        <LinearLayout
-            android:id="@+id/permissionView"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            android:orientation="vertical"
-            android:visibility="gone"
-            android:padding="32dp">
+        <ImageButton
+            android:id="@+id/btnSelectAll"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_check"
+            android:contentDescription="@string/select_all"
+            app:tint="@color/white"/>
 
-            <ImageView
-                android:layout_width="100dp"
-                android:layout_height="100dp"
-                android:src="@drawable/ic_permission"
-                android:alpha="0.6"
-                android:contentDescription="@string/permission_required"/>
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp"
-                android:text="@string/permission_required"
-                android:textSize="16sp"
-                android:textColor="#333333"
-                android:textStyle="bold"
-                android:textAlignment="center"/>
-
-            <com.google.android.material.button.MaterialButton
-                android:id="@+id/btnGrantPermission"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:text="@string/grant_permission"
-                app:cornerRadius="24dp"/>
-
-        </LinearLayout>
-
-    </FrameLayout>
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/fabSelectionMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="bottom|end"
         android:layout_marginEnd="16dp"
-        android:layout_marginBottom="72dp"
+        android:layout_marginBottom="16dp"
         android:orientation="vertical"
         android:gravity="end"
-        android:visibility="gone">
+        android:visibility="gone"
+        app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
+        app:layout_constraintEnd_toEndOf="parent">
 
         <com.google.android.material.floatingactionbutton.FloatingActionButton
             android:id="@+id/fabShare"
@@ -195,14 +191,15 @@
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
-        android:layout_width="match_parent"
-        android:layout_height="56dp"
-        android:layout_gravity="bottom"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:background="@color/white"
         app:labelVisibilityMode="labeled"
         app:menu="@menu/bottom_nav_menu"
         app:itemIconTint="@color/bottom_nav_color"
         app:itemTextColor="@color/bottom_nav_color"
-        app:elevation="8dp"/>
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"/>
 
-</androidx.coordinatorlayout.widget.CoordinatorLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>

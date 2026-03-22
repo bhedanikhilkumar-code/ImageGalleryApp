@@ -4,36 +4,36 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="4dp"
-    app:cardCornerRadius="12dp"
-    app:cardElevation="2dp"
+    android:layout_margin="2dp"
+    app:cardCornerRadius="8dp"
+    app:cardElevation="1dp"
     app:cardBackgroundColor="@color/white">
 
     <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
         <ImageView
             android:id="@+id/imageView"
             android:layout_width="match_parent"
-            android:layout_height="150dp"
+            android:layout_height="120dp"
             android:scaleType="centerCrop"
-            android:background="@drawable/placeholder_gradient"
+            android:background="@color/image_placeholder"
             android:contentDescription="@string/app_name"/>
 
         <View
             android:id="@+id/overlay"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="#30000000"
+            android:background="#40000000"
             android:visibility="gone"/>
 
         <ImageView
             android:id="@+id/ivFavorite"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_gravity="top|end"
-            android:layout_margin="8dp"
+            android:layout_margin="6dp"
             android:src="@drawable/ic_favorite"
             android:visibility="gone"
             android:contentDescription="@string/favorite"
@@ -41,10 +41,10 @@
 
         <ImageView
             android:id="@+id/ivSelection"
-            android:layout_width="28dp"
-            android:layout_height="28dp"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
             android:layout_gravity="top|start"
-            android:layout_margin="6dp"
+            android:layout_margin="4dp"
             android:src="@drawable/ic_check_circle_outline"
             android:visibility="gone"
             android:contentDescription="@string/selected_count"
