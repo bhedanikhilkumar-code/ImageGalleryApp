@@ -33,4 +33,10 @@
         android:title="@string/dark_mode"
         app:showAsAction="never"/>
 
+    <item
+        android:id="@+id/action_slideshow"
+        android:icon="@drawable/ic_play"
+        android:title="@string/slideshow"
+        app:showAsAction="ifRoom"/>
+
 </menu>

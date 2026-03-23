@@ -20,6 +20,7 @@ import androidx.appcompat.widget.SearchView
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.imagegallery.databinding.ActivityMainBinding
+import com.example.imagegallery.databinding.ActivitySlideshowBinding
 
 class MainActivity : AppCompatActivity() {
 
@@ -210,6 +211,18 @@ class MainActivity : AppCompatActivity() {
             R.id.action_theme -> { 
                 toggleTheme()
                 true 
+            }
+            R.id.action_slideshow -> {
+                if (displayedImages.isNotEmpty()) {
+                    val intent = Intent(this, SlideshowActivity::class.java).apply {
+                        putParcelableArrayListExtra(SlideshowActivity.EXTRA_IMAGE_URIS, ArrayList(displayedImages.map { it.uri }))
+                        putExtra(SlideshowActivity.EXTRA_POSITION, 0)
+                    }
+                    startActivity(intent)
+                } else {
+                    Toast.makeText(this, "No images to display", Toast.LENGTH_SHORT).show()
+                }
+                true
             }
             else -> super.onOptionsItemSelected(item)
         }

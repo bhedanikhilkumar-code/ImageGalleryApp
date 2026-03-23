@@ -26,6 +26,10 @@
             android:name=".FullScreenImageViewer"
             android:theme="@style/Theme.ImageGalleryApp.FullScreen"
             android:exported="false"/>
+        <activity
+            android:name=".SlideshowActivity"
+            android:theme="@style/Theme.ImageGalleryApp.FullScreen"
+            android:exported="false"/>
     </application>
 
 </manifest>

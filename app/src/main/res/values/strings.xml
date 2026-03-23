@@ -61,4 +61,10 @@
     <!-- Screenshots -->
     <string name="no_screenshots">No screenshots found</string>
     <string name="tap_screenshots_hint">Your screenshots will appear here</string>
+
+    <!-- Slideshow -->
+    <string name="slideshow">Slideshow</string>
+    <string name="play_pause">Play/Pause</string>
+    <string name="speed">Speed</string>
+    <string name="speed_3s">3 seconds</string>
 </resources>
