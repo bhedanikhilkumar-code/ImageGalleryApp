@@ -53,6 +53,20 @@ This README is written as a **portfolio-grade project document**: it explains th
 | **Media/data handling** | Built to handle user files, images, notes, or local content cleanly. |
 | **Extensible base** | Ready for search, filters, sync, and polished user workflows. |
 
+<!-- PROJECT_DOCS_HUB_START -->
+
+## Documentation Hub
+
+| Document | Purpose |
+| --- | --- |
+| [Architecture](docs/ARCHITECTURE.md) | System layers, workflow, data/state model, and extension points. |
+| [Case Study](docs/CASE_STUDY.md) | Product framing, decisions, tradeoffs, and portfolio story. |
+| [Roadmap](docs/ROADMAP.md) | Practical next steps for turning the project into a stronger product. |
+| [Contributing](CONTRIBUTING.md) | Branching, commit, review, and quality guidelines. |
+| [Security](SECURITY.md) | Responsible disclosure and safe configuration notes. |
+
+<!-- PROJECT_DOCS_HUB_END -->
+
 ## Detailed Product Blueprint
 
 ### Experience Map
